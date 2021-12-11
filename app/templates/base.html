@@ -1,0 +1,16 @@
+<html>
+    <head>
+        {% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{% block title %}{% endblock %} - EasyVax</title>
+    {% endblock %}
+    </head>
+    <body>
+        <div id="content">{% block content %}{% endblock %}</div>
+        <div id="footer">
+          {% block footer %}
+          <p>Copyright 2021</p>
+          {% endblock %}
+        </div>
+    </body>
+</html>
