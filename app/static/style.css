@@ -1,0 +1,18 @@
+form {
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+form > label {
+    grid-column: 2;
+}
+
+form > input {
+    grid-column: 3;
+}
+
+form > input[type=submit] {
+    grid-column: 2;
+    width: 30%
+}
