@@ -1,5 +1,6 @@
 
 from app import app
+import app.db.doctor_db as doctor_db
 from flask import render_template, request
 
 @app.route('/')
@@ -8,8 +9,8 @@ def index():
 
 @app.route('/patients', methods=['POST'])
 def patients():
-    email_address = request.form['email-address']
-    return email_address
+    doctor_db.register_doctor(request.form)
+    return 'Successfully submitted!'
 
 @app.route('/patient')
 def individual_patient():

@@ -6,13 +6,15 @@
 {% block content %}
   <h1>Welcome to EasyVax</h1>
   <p>Register or Login here</p>
-  <form action='/patients' method='post'>
+  <form name="registration-form"action='/patients' method='post'>
     <label>Name</label>
     <input name="name" type="text" required>
     <label>Email Address</label>
     <input name ="email-address" type="email" required>
+    <label>Phone Number</label>
+    <input name ="phone-number" type="text" required>
     <label>ID</label>
-    <input name="id_number" type=text required>
+    <input name="government-id" type="text" required>
     <label>Password</label>
     <input name="password" type="password" required>
     <input type="submit" />
