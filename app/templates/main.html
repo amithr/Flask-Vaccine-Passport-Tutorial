@@ -6,7 +6,7 @@
 {% block content %}
   <h1>Welcome to EasyVax</h1>
   <p>Register or Login here</p>
-  <form name="registration-form"action='/doctors' method='post'>
+  <form name="registration-form"action='/register-doctor' method='post'>
     <label>Name</label>
     <input name="name" type="text" required>
     <label>Email Address</label>
@@ -19,7 +19,7 @@
     <input name="password" type="password" required>
     <input type="submit" />
   </form>
-  <form action="{{ url_for('doctors') }}" method='post'>
+  <form action="{{ url_for('login_doctor') }}" method='post'>
     <label>Email Address</label>
     <input name ="email-address" type="email" required>
     <label>Password</label>

@@ -9,7 +9,7 @@ class Doctor(db.Model):
     phone_number = db.Column(db.String(12), unique=True, nullable=False)
     government_id = db.Column(db.String(6), unique=True, nullable=False)
     password_hash = db.Column(db.String(128))
-    patients = db.relationship("Patient", back_populates="doctor")
+    patients = db.relationship('Patient', backref='doctor', lazy=True)
 
 
 
@@ -24,8 +24,8 @@ class Patient(db.Model):
     name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
     phone_number = db.Column(db.String(12), unique=True, nullable=False)
-    doctor = db.relationship("Doctor", back_populates="patients")
-    vaccine_doses = db.relationship("Vaccine_Dose", back_populates="patient")
+    doctor_id = db.Column(db.Integer, db.ForeignKey('doctor.id'))
+    vaccine_doses = db.relationship('Vaccine_Dose', backref='patient')
 
 
 class Vaccine_Dose(db.Model):
@@ -35,5 +35,5 @@ class Vaccine_Dose(db.Model):
     dose_no = db.Column(db.Integer, nullable=False)
     dose_id = db.Column(db.String(6), nullable=False)
     dose_date = db.Column(db.DateTime(timezone=True), default=datetime.now)
-    patient = db.relationship("Patient", back_populates="vaccine_doses")  
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))  
 

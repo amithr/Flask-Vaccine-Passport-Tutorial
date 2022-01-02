@@ -8,7 +8,7 @@ from flask import render_template, request, session, url_for
 def index():
     return render_template('main.html')
 
-@app.route('/register-doctor')
+@app.route('/register-doctor', methods=['POST'])
 def register_doctor():
     form = request.form
     doctor = Doctor(
@@ -19,27 +19,27 @@ def register_doctor():
     doctor.set_password(form['password'])
     db.session.add(doctor)
     db.session.commit()
-    return render_template('main.html')
+    return 'Successfully registered'
 
 @app.route('/validate-doctor')
 def validate_doctor():
     return
 
-@app.route('/login-doctor')
+@app.route('/login-doctor', methods=['POST'])
 def login_doctor():
     form = request.form
-    doctor = Doctor.query.filter_by(email_address=form['email-address']).first()
+    doctor = Doctor.query.filter_by(email=form['email-address']).first()
     if doctor.check_password(form['password']):
-        session['doctor'] = doctor
+        session['doctor'] = doctor.id
         return redirect(url_for('patients'))
 
 
 
 
-@app.route('/patients', methods=['POST'])
+@app.route('/patients', methods=['POST', 'GET'])
 def patients():
     doctor = session['doctor']
-    return 'Successfully submitted!'
+    return 'Successfully logged in!'
 
 @app.route('/patient')
 def individual_patient():
