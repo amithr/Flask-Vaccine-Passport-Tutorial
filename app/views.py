@@ -2,7 +2,7 @@
 from werkzeug.utils import redirect
 from app import app, db
 from app.models import Doctor
-from flask import render_template, request, session, url_for
+from flask import json, render_template, request, session, url_for, jsonify
 
 @app.route('/')
 def index():
@@ -21,10 +21,31 @@ def register_doctor():
     db.session.commit()
     return 'Successfully registered'
 
-@app.route('/validate-doctor')
+@app.route('/validate-doctor', methods=['POST'])
 def validate_doctor():
-    return
+    if request.method == "POST":
+        email_address = request.get_json()['email']
+        doctor = Doctor.query.filter_by(email=email_address).first()
+        if doctor:
+            return jsonify({'user_exists': 'true'})
+        else:
+            return jsonify({'user_exists': 'false'})
 
+@app.route('/validate-password', methods=['POST'])
+def validate_password():
+    if request.method == "POST":
+        email_address = request.get_json()['password']
+        password = request.get_json()['password']
+        userFound = 'false'
+        passwordCorrect = 'false'
+        doctor = Doctor.query.filter_by(email=email_address).first()
+        if doctor:
+            userFound = 'true'
+            if doctor.check_password(password):
+                passwordCorrect = 'true'
+        
+        return jsonify({'user_exists': userFound, 'passwordCorrect': passwordCorrect})
+        
 @app.route('/login-doctor', methods=['POST'])
 def login_doctor():
     form = request.form

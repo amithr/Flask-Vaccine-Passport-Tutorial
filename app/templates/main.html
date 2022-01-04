@@ -6,11 +6,11 @@
 {% block content %}
   <h1>Welcome to EasyVax</h1>
   <p>Register or Login here</p>
-  <form name="registration-form"action='/register-doctor' method='post'>
+  <form name="registration-form" action='/register-doctor' method='post'>
     <label>Name</label>
     <input name="name" type="text" required>
     <label>Email Address</label>
-    <input name ="email-address" type="email" required>
+    <input name ="email-address" onfocusout="checkIfUserExistsWithEvent(event)" type="email" required>
     <label>Phone Number</label>
     <input name ="phone-number" type="text" required>
     <label>ID</label>
@@ -19,11 +19,14 @@
     <input name="password" type="password" required>
     <input type="submit" />
   </form>
-  <form action="{{ url_for('login_doctor') }}" method='post'>
+
+  <form name="login-form" onsubmit="event.preventDefault(); checkIfPasswordIsValid();" action="{{ url_for('login_doctor') }}" method='post'>
     <label>Email Address</label>
     <input name ="email-address" type="email" required>
     <label>Password</label>
     <input name="password" type="password" required>
     <input type="submit" />
   </form>
+  <script src="{{ url_for('static', filename='js/validate-users-form.js') }}"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 {% endblock %}
