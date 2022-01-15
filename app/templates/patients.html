@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}EasyVax - Patients List{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+    <a href="{{ url_for('logout_doctor') }}">Logout</a>
+{% endblock %}

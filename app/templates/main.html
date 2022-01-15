@@ -20,7 +20,7 @@
     <input type="submit" />
   </form>
 
-  <form name="login-form" onsubmit="event.preventDefault(); checkIfPasswordIsValid();" action="{{ url_for('login_doctor') }}" method='post'>
+  <form name="login-form" action="{{ url_for('login_doctor') }}" method='post'>
     <label>Email Address</label>
     <input name ="email-address" type="email" required>
     <label>Password</label>
