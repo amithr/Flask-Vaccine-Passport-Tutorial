@@ -1,0 +1,8 @@
+#vaccine-record-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+#patient-list > p {
+    margin-top: 0;
+}

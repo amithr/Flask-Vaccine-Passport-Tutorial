@@ -2,7 +2,7 @@
 {% block title %}EasyVax - Patients List{% endblock %}
 {% block head %}
   {{ super() }}
-  <link rel="stylesheet" href="{{ url_for('static', filename='patient.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/patient.css') }}">
 {% endblock %}
 {% block content %}
     <a href="{{ url_for('logout_doctor') }}">Logout</a>
@@ -18,7 +18,7 @@
     <div id="patient-list">
       <p>Patient Name</p><p>Patient Email</p><p>Patient Phone Number</p><p>Update Vaccine Record</p><p>Email Vaccine Certificate</p>
       {% for patient in patients %}
-        <p>{{patient.name}}</p><p>{{patient.email}}</p><p>{{patient.phone_number}}</p><a href="">Update Vaccine Record</a><a href="">Email Vaccine Certificate</a>
+        <p>{{patient.name}}</p><p>{{patient.email}}</p><p>{{patient.phone_number}}</p><a href="{{ url_for('vaccine_record', patient_id=patient.id) }}">Update Vaccine Record</a><a href="">Email Vaccine Certificate</a>
       {% endfor %}
   </div>
 {% endblock %}
