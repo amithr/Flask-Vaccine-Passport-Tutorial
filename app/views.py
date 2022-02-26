@@ -3,6 +3,9 @@ from werkzeug.utils import redirect
 from app import app, db
 from app.models import Doctor, Patient, Vaccine_Dose
 from flask import json, render_template, request, session, url_for, jsonify, flash
+from fpdf import FPDF
+import qrcode
+import os
 
 @app.route('/')
 def index():
@@ -53,12 +56,13 @@ def validate_password():
 def login_doctor():
     form = request.form
     doctor = Doctor.query.filter_by(email=form['email-address']).first()
-    if doctor.check_password(form['password']):
+
+    if doctor and doctor.check_password(form['password']):
         # if not, redirect to index and give flask message (don't worry about javascript validation)
         session['doctor'] = doctor.id
         return redirect(url_for('patients'))
     else:
-        flash("Password was incorrect.")
+        flash("Password was incorrect or user doesn't exist.")
         return redirect(url_for('index'))
 
 @app.route('/logout-doctor', methods=['POST', 'GET'])
@@ -136,4 +140,60 @@ def delete_vaccine_record(patient_id, vaccine_id):
     db.session.commit()
     flash('Vaccine dose successfully deleted.')
     return redirect(url_for('vaccine_record', patient_id=patient_id))
+
+def generate_qr_code(link, user_id):
+    #Creating an instance of qrcode
+    qr = qrcode.QRCode(
+            version=1,
+            box_size=10,
+            border=5)
+    qr.add_data(link)
+    qr.make(fit=True)
+    img = qr.make_image(fill='black', back_color='white')
+    file_name = "qr_code-"+str(user_id)+".png"
+    path = os.path.join("app/static", file_name)
+    img.save(path)
+    return path
+
+def generate_pdf(patient):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font('Arial', 'B', 16)
+    name_string = "Name: "+ patient.name
+    id_string = "ID: " + str(patient.id)
+    email_string = "Email: " + patient.email
+    doctor_id_string = "Doctor ID: " + str(patient.doctor_id)
+    pdf.cell(40, 10, name_string, ln=2, align="L")
+    pdf.cell(40, 10, id_string, ln=2, align="L")
+    pdf.cell(40, 10, email_string, ln=2, align="L")
+    pdf.cell(40, 10, doctor_id_string, ln=2, align="L")
+    verification_path = url_for('verify_vaccination_status', patient_id=patient.id, _external=True)
+    img_path = generate_qr_code(verification_path, patient.id)
+    pdf.cell(40, 10, "Scan QR Code to verify: ")
+    pdf.image(img_path, x=50, y=100)
+    pdf.output('vaccine_passport.pdf', 'F')
+    return True
+
+@app.route('/send-certificate/<patient_id>', methods=['GET'])
+def send_certificate(patient_id):
+    if not patient_id:
+        return redirect(url_for('patients'))
+    patient = Patient.query.filter_by(id=patient_id).first()
+    if patient:
+        generate_pdf(patient)
+        flash("Certificate generated")
+        return redirect(url_for('patients'))
+    else:
+        flash("Error generating certificate")
+        return redirect(url_for('patients'))
+
+@app.route('/verify-vaccination-status/<patient_id>', methods=['GET'])
+def verify_vaccination_status(patient_id):
+    if not patient_id:
+        return redirect(url_for('patients'))
+    patient = Patient.query.filter_by(id=patient_id).first()
+    if(len(patient.vaccine_doses) >= 2):
+        return "Fully Vaccinated"
+    else:
+        return "Not Fully Vaccinated"
 
